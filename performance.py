@@ -45,3 +45,14 @@ def non_overlapping():
 
 t = timeit.Timer("non_overlapping()", "from __main__ import non_overlapping")
 print("Line Non Overlappling: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+
+
+diamond = Polygon([(-100, 0), (0, -100), (100, 0), (0, 100)])
+square = Polygon([(-75, -75), (75, -75), (75, 75), (-75, 75)])
+assert not line1.touches(line2)
+
+def polygon():
+    diamond.touches(square)
+
+t = timeit.Timer("polygon()", "from __main__ import polygon")
+print("Polygon Intersecting: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
