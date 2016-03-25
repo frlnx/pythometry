@@ -138,7 +138,7 @@ class TestLine(object):
         assert self.bottomleft_to_center.touchpoint(self.vertical_at_ten) is None
 
     def test_touchpoint_behind(self):
-        assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) is None
+        assert self.center_to_right.touchpoint(self.vertical_at_ten) is None
 
     def test_touchpoint_nonexistant(self):
         assert self.horisontal_at_ten.touchpoint(self.horisontal_at_twenty) is None
