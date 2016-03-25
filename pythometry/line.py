@@ -99,16 +99,17 @@ class Line(object):
         for point in self.points:
             if point in other.points:
                 return point
-        between_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
-        other_radii = self.fit_radii(between_line.radii, self.radii)
-        self_radii = self.fit_radii(between_line.radii - math.pi, other.radii)
-        radii_between_origos = math.pi - self_radii - other_radii
-        print(radii_between_origos, self_radii, other_radii)
+        gamma_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
+        alpha = gamma_line.radii - self.radii
+        beta = gamma_line.radii + math.pi - other.radii
+        alpha = math.fabs(self.fit_radii(alpha))
+        beta = math.fabs(self.fit_radii(beta))
+        gamma = math.pi - alpha - beta
         try:
-            distance_from_own_origo = math.fabs(math.sin(other_radii) / (math.sin(radii_between_origos) / between_line.length))
+            alpha_length = math.fabs(math.sin(alpha) / (math.sin(gamma) / gamma_line.length))
         except ZeroDivisionError:
             return None
-        if distance_from_own_origo > self.length:
+        if alpha_length > self.length:
             return None
-        print(distance_from_own_origo)
-        return (math.cos(self.radii) * distance_from_own_origo + self.origo_x, math.sin(self.radii) * distance_from_own_origo + self.origo_y)
+        point = (math.cos(other.radii) * alpha_length + other.origo_x, math.sin(other.radii) * alpha_length + other.origo_y)
+        return point
