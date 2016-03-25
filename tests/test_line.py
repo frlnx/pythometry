@@ -1,6 +1,6 @@
 import math
 from pythometry.line import Line
-
+import pytest
 
 class TestLine(object):
 
@@ -133,3 +133,12 @@ class TestLine(object):
 
     def test_touchpoint(self):
         assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) == (10, 10)
+
+    def test_touchpoint_out_of_range(self):
+        assert self.bottomleft_to_center.touchpoint(self.vertical_at_ten) is None
+
+    def test_touchpoint_behind(self):
+        assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) is None
+
+    def test_touchpoint_nonexistant(self):
+        assert self.horisontal_at_ten.touchpoint(self.horisontal_at_twenty) is None
