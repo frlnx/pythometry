@@ -7,6 +7,7 @@ class Polygon(object):
         self.points = points
         if close:
             self.points.append(self.points[0])
+        self.closed = self.points[0] == self.points[-1]
         self.lines = []
         self._generatelines()
 
@@ -24,3 +25,8 @@ class Polygon(object):
                 if line.touches(line2):
                     return True
         return False
+
+    def encloses(self, other):
+        if len(self.lines) == 1:
+            return AttributeError("Cannot determine in and out without at least two lines")
+        raise NotImplementedError("But Please Do")
