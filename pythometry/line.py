@@ -90,3 +90,9 @@ class Line(object):
         inverseradii = self.fit_radii(other.radii - math.pi)
         return self.crosses_vector(other.origo_x, other.origo_y, other.radii) and \
             self.crosses_vector(other.endpoint_x, other.endpoint_y, inverseradii)
+
+    def touchpoint(self, other):
+        for point in self.points:
+            if point in other.points:
+                return point
+        return (float('nan'), float('nan'))

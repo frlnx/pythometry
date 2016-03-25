@@ -130,3 +130,6 @@ class TestLine(object):
 
     def test_crosses_vector_bottom_up(self):
         assert self.diagonal_bottomleft_topright.crosses_vector(50, 100, -math.pi / 2.0)
+
+    def test_touchpoint(self):
+        assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) == (10, 10)
