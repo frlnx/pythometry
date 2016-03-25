@@ -28,7 +28,11 @@ class Line(object):
         self._updatelength()
         self._updatepoints()
 
-    def updatevector(self, radii, length):
+    def updatevector(self, radii=None, length=None):
+        if radii is None:
+            radii = self.radii
+        if length is None:
+            length = self.length
         self.endpoint_x = float(math.cos(radii) * length)
         self.endpoint_y = float(math.sin(radii) * length)
         self._updatedeltas()
@@ -95,4 +99,16 @@ class Line(object):
         for point in self.points:
             if point in other.points:
                 return point
-        return (float('nan'), float('nan'))
+        between_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
+        other_radii = self.fit_radii(between_line.radii, self.radii)
+        self_radii = self.fit_radii(between_line.radii - math.pi, other.radii)
+        radii_between_origos = math.pi - self_radii - other_radii
+        print(radii_between_origos, self_radii, other_radii)
+        try:
+            distance_from_own_origo = math.fabs(math.sin(other_radii) / (math.sin(radii_between_origos) / between_line.length))
+        except ZeroDivisionError:
+            return None
+        if distance_from_own_origo > self.length:
+            return None
+        print(distance_from_own_origo)
+        return (math.cos(self.radii) * distance_from_own_origo + self.origo_x, math.sin(self.radii) * distance_from_own_origo + self.origo_y)
