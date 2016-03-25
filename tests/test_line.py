@@ -18,6 +18,14 @@ class TestLine(object):
         self.eighth = (math.pi / 4.0)
         self.overlapping_left = Line(0, 0, 10, 0)
         self.overlapping_right = Line(5, 0, 15, 0)
+        self.low_cross_line_one = Line(0, 30, 100, 70)
+        self.low_cross_line_two = Line(0, 70, 100, 30)
+        self.low_asymetrical_cross_line_one = Line(10, 30, 110, 70)
+        self.low_asymetrical_cross_line_two = Line(-10, 70, 90, 30)
+        self.shifted_diagonal_cross_line_one = Line(10, 30, 90, 70)
+        self.shifted_diagonal_cross_line_two = Line(30, 90, 70, 10)
+        self.right_shifted_diagonal_one = Line(10, 30, 90, 70)
+        self.right_shifted_diagonal_two = Line(10, 70, 90, 30)
 
     def test_overlapping_on_same_plane(self):
         assert self.overlapping_left.touches(self.overlapping_right)
@@ -131,8 +139,31 @@ class TestLine(object):
     def test_crosses_vector_bottom_up(self):
         assert self.diagonal_bottomleft_topright.crosses_vector(50, 100, -math.pi / 2.0)
 
-    def test_touchpoint(self):
+    def test_touchpoint_topleft_cross(self):
         assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) == (10, 10)
+
+    def test_touchpoint_diagonals_middle(self):
+        actual = self.diagonal_bottomleft_topright.touchpoint(self.diagonal_topleft_bottomright)
+        actual = (round(actual[0], 3), round(actual[1], 3))
+        assert actual == (50.0, 50.0)
+
+    def test_touchpoint_low_cross_middle(self):
+        assert self.low_cross_line_one.touchpoint(self.low_cross_line_two) == (50, 50)
+
+    def test_touchpoint_low_asymetrical_cross_middle(self):
+        actual = self.low_asymetrical_cross_line_one.touchpoint(self.low_asymetrical_cross_line_two)
+        actual = (round(actual[0], 3), round(actual[1], 3))
+        assert actual == (50, 46)
+
+    def test_touchpoint_shifted_diagonal_cross_middle(self):
+        actual = self.shifted_diagonal_cross_line_one.touchpoint(self.shifted_diagonal_cross_line_two)
+        actual = (round(actual[0], 3), round(actual[1], 3))
+        assert actual == (50, 50)
+
+    def test_touchpoint_right_shifted_diagonal_cross_middle(self):
+        actual = self.right_shifted_diagonal_one.touchpoint(self.right_shifted_diagonal_two)
+        actual = (round(actual[0], 3), round(actual[1], 3))
+        assert actual == (50, 50)
 
     def test_touchpoint_out_of_range(self):
         assert self.bottomleft_to_center.touchpoint(self.vertical_at_ten) is None
