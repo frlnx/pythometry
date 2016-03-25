@@ -8,3 +8,9 @@ class TestPolygon(object):
 
     def test_diamond_and_square_overlaps(self):
         assert self.square.touches(self.diamond)
+
+    def test_closed_vs_open(self):
+        openpoly = Polygon([(0, 0), (10, 10), (0, 10)])
+        closedpoly = Polygon([(0, 0), (10, 10), (0, 10)], close=True)
+        assert len(openpoly.lines) == 2
+        assert len(closedpoly.lines) == 3

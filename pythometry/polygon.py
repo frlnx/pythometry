@@ -3,8 +3,10 @@ from pythometry.line import Line
 
 class Polygon(object):
 
-    def __init__(self, points):
+    def __init__(self, points, close=False):
         self.points = points
+        if close:
+            self.points.append(self.points[0])
         self.lines = []
         self._generatelines()
 
