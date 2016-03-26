@@ -3,56 +3,69 @@ from pythometry import Polygon
 import timeit
 
 
+def run_timer(text, function):
+    t = timeit.Timer("{function}()".format(function=function.__name__),
+                     "from __main__ import {function}".format(function=function.__name__))
+    tmpl = "%.2f usec/pass"
+    print("-", text, "\t", tmpl % (1000000 * t.timeit(number=100000)/100000))
+
 line1 = Line(0, 0, 100, 100)
 line2 = Line(100, 0, 0, 100)
 assert line1.touches(line2)
 
-def intersection():
+def crossed_lines_touch():
     line1.touches(line2)
 
-t = timeit.Timer("intersection()", "from __main__ import intersection")
-print("Line Intersection: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+def crossed_lines_touchpoint():
+    line1.touchpoint(line2)
 
+run_timer("Does two crossed lines touch? (yes)", crossed_lines_touch)
+run_timer("Where does two crossed lines touch?", crossed_lines_touchpoint)
 
 line1 = Line(0, 0, 100, 100)
 line2 = Line(10, 10, 110, 110)
 assert line1.touches(line2)
 
-def shifted():
+def lines_on_top_of_eachother_touch():
     line1.touches(line2)
 
-t = timeit.Timer("shifted()", "from __main__ import shifted")
-print("Shifted lines: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+def lines_on_top_of_eachother_touchpoint():
+    line1.touchpoint(line2)
 
+run_timer("Does two parallel lines on top of each other touch? (yes)", lines_on_top_of_eachother_touch)
+run_timer("Where does two parallel lines on top of each other touch?", lines_on_top_of_eachother_touchpoint)
 
 line1 = Line(0, 0, 100, 100)
 line2 = Line(10, 0, 110, 100)
 assert not line1.touches(line2)
 
-def non_intersection():
+def lines_close_but_not_touching_touch():
     line1.touches(line2)
 
-t = timeit.Timer("non_intersection()", "from __main__ import non_intersection")
-print("Line Non Intersection: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+def lines_close_but_not_touching_touchpoint():
+    line1.touchpoint(line2)
 
+run_timer("Does two non overlapping parallel lines touch? (no, but close)", lines_close_but_not_touching_touch)
+run_timer("Where does two non overlapping parallel lines touch?", lines_close_but_not_touching_touchpoint)
 
 line1 = Line(0, 0, 100, 100)
 line2 = Line(210, 210, 310, 310)
 assert not line1.touches(line2)
 
-def non_overlapping():
+def lines_far_away_touch():
     line1.touches(line2)
 
-t = timeit.Timer("non_overlapping()", "from __main__ import non_overlapping")
-print("Line Non Overlappling: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+def lines_far_away_touchpoint():
+    line1.touchpoint(line2)
 
+run_timer("Does two lines far away from each other touch? (no)", lines_far_away_touch)
+run_timer("Does two lines far away from each other touch? (no)", lines_far_away_touchpoint)
 
 diamond = Polygon([(-100, 0), (0, -100), (100, 0), (0, 100)])
 square = Polygon([(-75, -75), (75, -75), (75, 75), (-75, 75)])
 assert not line1.touches(line2)
 
-def polygon():
+def nestled_polygons():
     diamond.touches(square)
 
-t = timeit.Timer("polygon()", "from __main__ import polygon")
-print("Polygon Intersecting: %.2f usec/pass" % (1000000 * t.timeit(number=100000)/100000))
+run_timer("Does two polygons nestled on each other touch? (yes)", nestled_polygons)
