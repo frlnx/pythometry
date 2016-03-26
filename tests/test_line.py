@@ -26,9 +26,15 @@ class TestLine(object):
         self.shifted_diagonal_cross_line_two = Line(30, 90, 70, 10)
         self.right_shifted_diagonal_one = Line(10, 30, 90, 70)
         self.right_shifted_diagonal_two = Line(10, 70, 90, 30)
+        self.line1 = Line(0, 0, 100, 100)
+        self.line2 = Line(100, 0, 0, 100)
 
     def test_overlapping_on_same_plane(self):
         assert self.overlapping_left.touches(self.overlapping_right)
+
+    def test_overlapping_on_same_plane_touchpoint(self):
+        assert self.overlapping_left._boundingbox_intersects(self.overlapping_right)
+        assert self.overlapping_left.findtouchpoint(self.overlapping_right) == (5, 0)
 
     def test_center_to_right_does_not_touch_vertical_at_ten(self):
         assert not self.center_to_right.touches(self.vertical_at_ten)
@@ -52,9 +58,16 @@ class TestLine(object):
         assert not self.vertical_at_ten.touches(self.vertical_at_twenty)
 
     def test_horisontal_touches_diagonal(self):
+        assert self.horisontal_at_ten._boundingbox_intersects(self.diagonal_bottomleft_topright)
         assert self.horisontal_at_ten.touches(self.diagonal_bottomleft_topright)
+
+        assert self.horisontal_at_ten._boundingbox_intersects(self.diagonal_topleft_bottomright)
         assert self.horisontal_at_ten.touches(self.diagonal_topleft_bottomright)
+
+        assert self.horisontal_at_twenty._boundingbox_intersects(self.diagonal_bottomleft_topright)
         assert self.horisontal_at_twenty.touches(self.diagonal_bottomleft_topright)
+
+        assert self.horisontal_at_twenty._boundingbox_intersects(self.diagonal_topleft_bottomright)
         assert self.horisontal_at_twenty.touches(self.diagonal_topleft_bottomright)
 
     def test_horisontal_touches_vertical(self):
@@ -140,36 +153,42 @@ class TestLine(object):
         assert self.diagonal_bottomleft_topright.crosses_vector(50, 100, -math.pi / 2.0)
 
     def test_touchpoint_topleft_cross(self):
-        assert self.horisontal_at_ten.touchpoint(self.vertical_at_ten) == (10, 10)
+        assert self.horisontal_at_ten.findtouchpoint(self.vertical_at_ten) == (10, 10)
 
     def test_touchpoint_diagonals_middle(self):
-        actual = self.diagonal_bottomleft_topright.touchpoint(self.diagonal_topleft_bottomright)
+        actual = self.diagonal_bottomleft_topright.findtouchpoint(self.diagonal_topleft_bottomright)
         actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50.0, 50.0)
 
     def test_touchpoint_low_cross_middle(self):
-        assert self.low_cross_line_one.touchpoint(self.low_cross_line_two) == (50, 50)
+        assert self.low_cross_line_one.findtouchpoint(self.low_cross_line_two) == (50, 50)
 
     def test_touchpoint_low_asymetrical_cross_middle(self):
-        actual = self.low_asymetrical_cross_line_one.touchpoint(self.low_asymetrical_cross_line_two)
+        actual = self.low_asymetrical_cross_line_one.findtouchpoint(self.low_asymetrical_cross_line_two)
         actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 46)
 
     def test_touchpoint_shifted_diagonal_cross_middle(self):
-        actual = self.shifted_diagonal_cross_line_one.touchpoint(self.shifted_diagonal_cross_line_two)
+        actual = self.shifted_diagonal_cross_line_one.findtouchpoint(self.shifted_diagonal_cross_line_two)
         actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 50)
 
     def test_touchpoint_right_shifted_diagonal_cross_middle(self):
-        actual = self.right_shifted_diagonal_one.touchpoint(self.right_shifted_diagonal_two)
+        actual = self.right_shifted_diagonal_one.findtouchpoint(self.right_shifted_diagonal_two)
         actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 50)
 
     def test_touchpoint_out_of_range(self):
-        assert self.bottomleft_to_center.touchpoint(self.vertical_at_ten) is None
+        assert self.bottomleft_to_center.findtouchpoint(self.vertical_at_ten) is None
 
     def test_touchpoint_behind(self):
-        assert self.center_to_right.touchpoint(self.vertical_at_ten) is None
+        assert self.center_to_right.findtouchpoint(self.vertical_at_ten) is None
 
     def test_touchpoint_nonexistant(self):
-        assert self.horisontal_at_ten.touchpoint(self.horisontal_at_twenty) is None
+        assert self.horisontal_at_ten.findtouchpoint(self.horisontal_at_twenty) is None
+
+    def test_boundingbox_intersection(self):
+        assert self.diagonal_bottomleft_topright._boundingbox_intersects(self.diagonal_topleft_bottomright)
+
+    def test_boundingbox_nonintersection(self):
+        assert not self.bottomleft_to_center._boundingbox_intersects(self.horisontal_at_ten)

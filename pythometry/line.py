@@ -4,6 +4,8 @@ import math
 class Line(object):
 
     REPRTEMPLATE = "pythometry.Line ({} {}) - ({} {}) r:{} l:{}"
+    DECIMALPOINTSACCURACY = 8
+
 
     def __init__(self, origo_x, origo_y, endpoint_x=None, endpoint_y=None, radii=None, length=None):
         self.origo_x = origo_x
@@ -12,6 +14,7 @@ class Line(object):
         self.endpoint_y = endpoint_y
         self.radii = radii
         self.length = length
+        self.boundingbox = ((None, None), (None, None))
         self.points = ((None, None), (None, None))
         if endpoint_x is not None and endpoint_y is not None:
             self.updateendpoints(endpoint_x, endpoint_y)
@@ -27,6 +30,7 @@ class Line(object):
         self._updateradii()
         self._updatelength()
         self._updatepoints()
+        self._updateboundingbox()
 
     def updatevector(self, radii=None, length=None):
         if radii is None:
@@ -37,6 +41,12 @@ class Line(object):
         self.endpoint_y = float(math.sin(radii) * length)
         self._updatedeltas()
         self._updatepoints()
+        self._updateboundingbox()
+
+    def _updateboundingbox(self):
+        minx, maxx = sorted([self.origo_x, self.endpoint_x])
+        miny, maxy = sorted([self.origo_y, self.endpoint_y])
+        self.boundingbox = ((minx, miny), (maxx, maxy))
 
     def _updatedeltas(self):
         self.deltax = self.endpoint_x - self.origo_x
@@ -87,18 +97,53 @@ class Line(object):
         smallest_radii, biggest_radii = self.get_radii_range_from_vector(origo_x, origo_y, radii)
         return smallest_radii <= radii <= biggest_radii
 
+    def _boundingbox_intersects(self, other):
+        self_minpoint, self_maxpoint = self.boundingbox
+        other_minpoint, other_maxpoint = other.boundingbox
+        return self_minpoint[0] <= other_maxpoint[0] and self_minpoint[1] <= other_maxpoint[1] and \
+            self_maxpoint[0] >= other_minpoint[0] and self_maxpoint[1] >= other_minpoint[1]
+
+    def _shares_points(self, other):
+        for point in other.points:
+            if point in self.points:
+                return point
+        return None
+
+    def _touchespoints(self, other):
+        for point in other.points:
+            if self._touchespoint(point):
+                return point
+        return None
+
+    def _touchespoint(self, point):
+        px, py = point
+        if not self.boundingbox[0][0] < px < self.boundingbox[1][0] and \
+           not self.boundingbox[0][1] < py < self.boundingbox[1][1]:
+            return False
+        px -= self.boundingbox[0][0]
+        py -= self.boundingbox[0][1]
+        k = float(self.deltay) / float(self.deltax)
+        return k == float(py) / float(px)
+
     def touches(self, other):
-        for point in self.points:
-            if point in other.points:
-                return True
+        if not self._boundingbox_intersects(other):
+            return False
+        shared_point = self._shares_points(other)
+        if shared_point is not None:
+            return True
         inverseradii = self.fit_radii(other.radii - math.pi)
         return self.crosses_vector(other.origo_x, other.origo_y, other.radii) and \
             self.crosses_vector(other.endpoint_x, other.endpoint_y, inverseradii)
 
-    def touchpoint(self, other):
-        for point in self.points:
-            if point in other.points:
-                return point
+    def findtouchpoint(self, other):
+        if not self._boundingbox_intersects(other):
+            return None
+        point = self._shares_points(other)
+        if point is not None:
+            return point
+        point = self._touchespoints(other)
+        if point is not None:
+            return point
         gamma_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
         alpha = gamma_line.radii - self.radii
         beta = gamma_line.radii + math.pi - other.radii
@@ -111,5 +156,7 @@ class Line(object):
             return None
         if alpha_length > self.length:
             return None
-        point = (math.cos(other.radii) * alpha_length + other.origo_x, math.sin(other.radii) * alpha_length + other.origo_y)
+        point = (math.cos(other.radii) * alpha_length + other.origo_x,
+                 math.sin(other.radii) * alpha_length + other.origo_y)
+        point = (round(point[0], self.DECIMALPOINTSACCURACY), round(point[1], self.DECIMALPOINTSACCURACY))
         return point
