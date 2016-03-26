@@ -12,12 +12,13 @@ def run_timer(text, function):
 line1 = Line(0, 0, 100, 100)
 line2 = Line(100, 0, 0, 100)
 assert line1.touches(line2)
+assert line1.findtouchpoint(line2) == (50, 50)
 
 def crossed_lines_touch():
     line1.touches(line2)
 
 def crossed_lines_touchpoint():
-    line1.touchpoint(line2)
+    line1.findtouchpoint(line2)
 
 run_timer("Does two crossed lines touch? (yes)", crossed_lines_touch)
 run_timer("Where does two crossed lines touch?", crossed_lines_touchpoint)
@@ -25,12 +26,13 @@ run_timer("Where does two crossed lines touch?", crossed_lines_touchpoint)
 line1 = Line(0, 0, 100, 100)
 line2 = Line(10, 10, 110, 110)
 assert line1.touches(line2)
+assert line1.findtouchpoint(line2) is not None
 
 def lines_on_top_of_eachother_touch():
     line1.touches(line2)
 
 def lines_on_top_of_eachother_touchpoint():
-    line1.touchpoint(line2)
+    line1.findtouchpoint(line2)
 
 run_timer("Does two parallel lines on top of each other touch? (yes)", lines_on_top_of_eachother_touch)
 run_timer("Where does two parallel lines on top of each other touch?", lines_on_top_of_eachother_touchpoint)
@@ -43,7 +45,7 @@ def lines_close_but_not_touching_touch():
     line1.touches(line2)
 
 def lines_close_but_not_touching_touchpoint():
-    line1.touchpoint(line2)
+    line1.findtouchpoint(line2)
 
 run_timer("Does two non overlapping parallel lines touch? (no, but close)", lines_close_but_not_touching_touch)
 run_timer("Where does two non overlapping parallel lines touch?", lines_close_but_not_touching_touchpoint)
@@ -56,7 +58,7 @@ def lines_far_away_touch():
     line1.touches(line2)
 
 def lines_far_away_touchpoint():
-    line1.touchpoint(line2)
+    line1.findtouchpoint(line2)
 
 run_timer("Does two lines far away from each other touch? (no)", lines_far_away_touch)
 run_timer("Does two lines far away from each other touch? (no)", lines_far_away_touchpoint)
