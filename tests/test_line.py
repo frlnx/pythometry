@@ -179,7 +179,7 @@ class TestLine(object):
         assert actual == (50, 50)
 
     def test_touchpoint_out_of_range(self):
-        assert self.bottomleft_to_center.findtouchpoint(self.vertical_at_ten) is None
+        assert self.bottomleft_to_center.findtouchpoint(self.horisontal_at_ten) is None
 
     def test_touchpoint_behind(self):
         assert self.center_to_right.findtouchpoint(self.vertical_at_ten) is None

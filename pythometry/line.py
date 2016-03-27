@@ -136,8 +136,8 @@ class Line(object):
         if point is not None:
             return True
 
-        touchpointdistance = self._finddistancetocollision(other)
-        if touchpointdistance is None or touchpointdistance > self.length:
+        owndistance, otherdistance = self._finddistancetocollision(other)
+        if owndistance is None or owndistance > self.length or otherdistance > other.length:
             return False
         return True
 
@@ -153,12 +153,14 @@ class Line(object):
         if point is not None:
             return point
 
-        touchpointdistance = self._finddistancetocollision(other)
-        if touchpointdistance is None or touchpointdistance > self.length:
+        owndistance, otherdistance = self._finddistancetocollision(other)
+        print(self, other)
+        print(owndistance, otherdistance)
+        if owndistance is None or owndistance > self.length or otherdistance > other.length:
             return None
 
-        point = (math.cos(other.radii) * touchpointdistance + other.origo_x,
-                 math.sin(other.radii) * touchpointdistance + other.origo_y)
+        point = (math.cos(self.radii) * owndistance + self.origo_x,
+                 math.sin(self.radii) * owndistance + self.origo_y)
         point = (round(point[0], self.DECIMALPOINTSACCURACY), round(point[1], self.DECIMALPOINTSACCURACY))
         return point
 
@@ -172,10 +174,12 @@ class Line(object):
         beta = math.fabs(self.fit_radii(beta))
         gamma = math.pi - alpha - beta
         try:
-            alpha_length = math.fabs(math.sin(alpha) / (math.sin(gamma) / gamma_line.length))
+            gamma_fraction = math.sin(gamma) / gamma_line.length
+            alpha_length = math.fabs(math.sin(alpha) / gamma_fraction)
+            beta_length = math.fabs(math.sin(beta) / gamma_fraction)
         except ZeroDivisionError:
             return None
-        return alpha_length
+        return beta_length, alpha_length
 
     def parallel_to(self, other):
         return self.radii % (math.pi * 2) == other.radii % (math.pi * 2) or \
