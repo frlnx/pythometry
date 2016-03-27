@@ -7,6 +7,8 @@ class TestPolygon(object):
         self.diamond = Polygon([(-100, 0), (0, -100), (100, 0), (0, 100)])
         self.square = Polygon([(-75, -75), (75, -75), (75, 75), (-75, 75)])
         self.tinysquare = Polygon([(-5, -5), (5, -5), (5, 5), (-5, 5)], close=True)
+        self.big_u_shape = Polygon([(-100, -100), (-100, 100), (100, 100), (100, -100), (90, -100), (90, 90), (-90, 90), (-90, -100)],
+                                   close=True)
 
     def test_diamond_and_square_overlaps(self):
         assert self.square.touches(self.diamond)
@@ -25,3 +27,6 @@ class TestPolygon(object):
 
     def test_bigclosedshape_encloses_openshape(self):
         assert self.bigdiamond.encloses(self.square)
+
+    def test_big_u_shape_encloses_openshape(self):
+        assert not self.big_u_shape.encloses(self.tinysquare)
