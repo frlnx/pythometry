@@ -6,7 +6,6 @@ class Line(object):
     REPRTEMPLATE = "pythometry.Line ({} {}) - ({} {}) r:{} l:{}"
     DECIMALPOINTSACCURACY = 8
 
-
     def __init__(self, origo_x, origo_y, endpoint_x=None, endpoint_y=None, radii=None, length=None):
         self.origo_x = origo_x
         self.origo_y = origo_y
@@ -141,7 +140,6 @@ class Line(object):
         if touchpointdistance is None or touchpointdistance > self.length:
             return False
         return True
-
 
     def findtouchpoint(self, other):
         if not self._boundingbox_intersects(other):
