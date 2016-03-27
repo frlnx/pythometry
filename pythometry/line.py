@@ -128,12 +128,20 @@ class Line(object):
     def touches(self, other):
         if not self._boundingbox_intersects(other):
             return False
-        shared_point = self._shares_points(other)
-        if shared_point is not None:
+
+        point = self._shares_points(other)
+        if point is not None:
             return True
-        inverseradii = self.fit_radii(other.radii - math.pi)
-        return self.crosses_vector(other.origo_x, other.origo_y, other.radii) and \
-            self.crosses_vector(other.endpoint_x, other.endpoint_y, inverseradii)
+
+        point = self._touchespoints(other)
+        if point is not None:
+            return True
+
+        touchpointdistance = self._finddistancetocollision(other)
+        if touchpointdistance is None or touchpointdistance > self.length:
+            return False
+        return True
+
 
     def findtouchpoint(self, other):
         if not self._boundingbox_intersects(other):
