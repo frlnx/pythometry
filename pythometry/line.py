@@ -138,12 +138,27 @@ class Line(object):
     def findtouchpoint(self, other):
         if not self._boundingbox_intersects(other):
             return None
+
         point = self._shares_points(other)
         if point is not None:
             return point
+
         point = self._touchespoints(other)
         if point is not None:
             return point
+
+        touchpointdistance = self._finddistancetocollision(other)
+        if touchpointdistance is None or touchpointdistance > self.length:
+            return None
+
+        point = (math.cos(other.radii) * touchpointdistance + other.origo_x,
+                 math.sin(other.radii) * touchpointdistance + other.origo_y)
+        point = (round(point[0], self.DECIMALPOINTSACCURACY), round(point[1], self.DECIMALPOINTSACCURACY))
+        return point
+
+    def _finddistancetocollision(self, other):
+        if self.parallel_to(other):
+            return None
         gamma_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
         alpha = gamma_line.radii - self.radii
         beta = gamma_line.radii + math.pi - other.radii
@@ -154,9 +169,8 @@ class Line(object):
             alpha_length = math.fabs(math.sin(alpha) / (math.sin(gamma) / gamma_line.length))
         except ZeroDivisionError:
             return None
-        if alpha_length > self.length:
-            return None
-        point = (math.cos(other.radii) * alpha_length + other.origo_x,
-                 math.sin(other.radii) * alpha_length + other.origo_y)
-        point = (round(point[0], self.DECIMALPOINTSACCURACY), round(point[1], self.DECIMALPOINTSACCURACY))
-        return point
+        return alpha_length
+
+    def parallel_to(self, other):
+        return self.radii % (math.pi * 2) == other.radii % (math.pi * 2) or \
+           self.radii % (math.pi * 2) == (other.radii + math.pi) % (math.pi * 2)
