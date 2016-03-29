@@ -18,13 +18,13 @@ Only tested on:
 
 
 ## Current benchmarks:
-- Does two crossed lines touch? (yes) 	 17.13 usec/pass
-- Where does two crossed lines touch? 	 20.70 usec/pass
-- Does two parallel lines on top of each other touch? (yes) 	 4.15 usec/pass
-- Where does two parallel lines on top of each other touch? 	 4.14 usec/pass
-- Does two non overlapping parallel lines touch? (no, but close) 	 5.99 usec/pass
-- Where does two non overlapping parallel lines touch? 	 5.99 usec/pass
-- Does two lines far away from each other touch? (no) 	 0.84 usec/pass
-- Does two lines far away from each other touch? (no) 	 0.85 usec/pass
-- Does two polygons nestled on each other touch? (yes) 	 21.09 usec/pass
+- Does two crossed lines touch? (yes) 	 32.43 usec/pass
+- Where does two crossed lines touch? 	 38.91 usec/pass
+- Does two parallel lines on top of each other touch? (yes) 	 6.11 usec/pass
+- Where does two parallel lines on top of each other touch? 	 6.10 usec/pass
+- Does two non overlapping parallel lines touch? (no, but close) 	 22.69 usec/pass
+- Where does two non overlapping parallel lines touch? 	 22.72 usec/pass
+- Does two lines far away from each other touch? (no) 	 0.86 usec/pass
+- Does two lines far away from each other touch? (no) 	 0.87 usec/pass
+- Does two polygons nestled on each other touch? (yes) 	 42.09 usec/pass
 
