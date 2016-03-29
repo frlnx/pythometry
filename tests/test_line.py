@@ -162,7 +162,6 @@ class TestLine(object):
 
     def test_touchpoint_diagonals_middle(self):
         actual = self.diagonal_bottomleft_topright.findtouchpoint(self.diagonal_topleft_bottomright)
-        actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50.0, 50.0)
 
     def test_touchpoint_low_cross_middle(self):
@@ -170,17 +169,14 @@ class TestLine(object):
 
     def test_touchpoint_low_asymetrical_cross_middle(self):
         actual = self.low_asymetrical_cross_line_one.findtouchpoint(self.low_asymetrical_cross_line_two)
-        actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 46)
 
     def test_touchpoint_shifted_diagonal_cross_middle(self):
         actual = self.shifted_diagonal_cross_line_one.findtouchpoint(self.shifted_diagonal_cross_line_two)
-        actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 50)
 
     def test_touchpoint_right_shifted_diagonal_cross_middle(self):
         actual = self.right_shifted_diagonal_one.findtouchpoint(self.right_shifted_diagonal_two)
-        actual = (round(actual[0], 3), round(actual[1], 3))
         assert actual == (50, 50)
 
     def test_touchpoint_out_of_range(self):

@@ -127,24 +127,7 @@ class Line(object):
         return k == round(float(py) / float(px), self.DECIMALPOINTSACCURACY)
 
     def touches(self, other):
-        if not self._boundingbox_intersects(other):
-            return False
-
-        point = self._shares_points(other)
-        if point is not None:
-            return True
-
-        point = self._touchespoints(other)
-        if point is not None:
-            return True
-
-        if not self.converges_on(other):
-            return None
-
-        owndistance, otherdistance = self._finddistancetocollision(other)
-        if owndistance is None or owndistance > self.length or otherdistance > other.length:
-            return False
-        return True
+        return self.findtouchpoint(other) is not None
 
     def converges_on(self, other):
         otherradii = other.radii
@@ -156,9 +139,15 @@ class Line(object):
                (linebetween.endpoint_y < self.origo_y and otherradii > 0)
 
     def findtouchpoint(self, other):
+        #  Fail if either line segment is zero-length.
+        if (self.origo_x == self.endpoint_x and self.origo_y == self.endpoint_y) or \
+                (other.origo_x == other.endpoint_x and other.origo_y == other.endpoint_y):
+            return None
+
         if not self._boundingbox_intersects(other):
             return None
 
+        #  Fail if the segments share an end-point.
         point = self._shares_points(other)
         if point is not None:
             return point
@@ -167,34 +156,46 @@ class Line(object):
         if point is not None:
             return point
 
-        if not self.converges_on(other):
-            return None
-
-        owndistance, otherdistance = self._finddistancetocollision(other)
-        if owndistance is None or owndistance > self.length or otherdistance > other.length:
-            return None
-
-        point = (math.cos(self.radii) * owndistance + self.origo_x,
-                 math.sin(self.radii) * owndistance + self.origo_y)
-        point = (round(point[0], self.DECIMALPOINTSACCURACY), round(point[1], self.DECIMALPOINTSACCURACY))
-        return point
-
-    def _finddistancetocollision(self, other):
         if self.parallel_to(other):
             return None
-        gamma_line = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
-        alpha = gamma_line.radii - self.radii
-        beta = gamma_line.radii + math.pi - other.radii
-        alpha = math.fabs(self.fit_radii(alpha))
-        beta = math.fabs(self.fit_radii(beta))
-        gamma = math.pi - alpha - beta
-        try:
-            gamma_fraction = math.sin(gamma) / gamma_line.length
-            alpha_length = (math.sin(alpha) / gamma_fraction)
-            beta_length = (math.sin(beta) / gamma_fraction)
-        except ZeroDivisionError:
+        
+        #  (1) Translate the system so that point A is on the origin.
+        self_endpoint_x = self.endpoint_x - self.origo_x
+        self_endpoint_y = self.endpoint_y - self.origo_y
+        other_origo_x = other.origo_x - self.origo_x
+        other_origo_y = other.origo_y - self.origo_y
+        other_endpoint_x = other.endpoint_x - self.origo_x
+        other_endpoint_y = other.endpoint_y - self.origo_y
+
+        #  (2) Rotate the system so that point B is on the positive X self.origo_xis.
+        theCos = self_endpoint_x / float(self.length)
+        theSin = self_endpoint_y / float(self.length)
+
+        newX = other_origo_x * theCos + other_origo_y * theSin
+        other_origo_y = other_origo_y * theCos - other_origo_x * theSin
+        other_origo_x = newX
+        newX = other_endpoint_x * theCos + other_endpoint_y * theSin
+        other_endpoint_y = other_endpoint_y * theCos - other_endpoint_x * theSin
+        other_endpoint_x = newX
+
+        #  Fail if segment C-D doesn't cross line A-B.
+        if (other_origo_y < 0. and other_endpoint_y < 0.) or (other_origo_y >= 0. and other_endpoint_y >= 0.):
             return None
-        return beta_length, alpha_length
+        
+        #  (3) Discover the position of the intersection point along line A-B.
+        distance_to_intersection_along_own_axis = other_endpoint_x + (other_origo_x - other_endpoint_x) * \
+                                                  other_endpoint_y / (other_endpoint_y - other_origo_y)
+        
+        #  Fail if segment C-D crosses line A-B outside of segment A-B.
+        if 0 > distance_to_intersection_along_own_axis or distance_to_intersection_along_own_axis > self.length:
+            return None
+        
+        #  (4) Apply the discovered position to line A-B in the original coordinate system.
+        x = self.origo_x + distance_to_intersection_along_own_axis * theCos
+        y = self.origo_y + distance_to_intersection_along_own_axis * theSin
+        x = round(x, self.DECIMALPOINTSACCURACY)
+        y = round(y, self.DECIMALPOINTSACCURACY)
+        return (x, y)
 
     def parallel_to(self, other):
         return self.radii % (math.pi * 2) == other.radii % (math.pi * 2) or \
