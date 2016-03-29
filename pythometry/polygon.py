@@ -41,14 +41,14 @@ class Polygon(object):
         if not self._boundingbox_intersects(other):
             return False
         for line in self.lines:
+            if not line._boundingbox_intersects(other):
+                continue
             for line2 in other.lines:
                 if line.touches(line2):
                     return True
         return False
 
     def encloses(self, other):
-        if not self._boundingbox_intersects(other):
-            return False
         if self.touches(other):
             return False
         lines = self.lines
