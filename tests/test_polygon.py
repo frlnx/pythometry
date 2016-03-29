@@ -4,8 +4,8 @@ class TestPolygon(object):
 
     def setup(self):
         self.bigdiamond = Polygon([(-200, 0), (0, -200), (200, 0), (0, 200)], close=True)
-        self.diamond = Polygon([(-100, 0), (0, -100), (100, 0), (0, 100)])
-        self.square = Polygon([(-75, -75), (75, -75), (75, 75), (-75, 75)])
+        self.diamond = Polygon([(-50, 0), (0, -50), (50, 0), (0, 50)])
+        self.square = Polygon([(-25, -25), (25, -25), (25, 25), (-25, 25)])
         self.tinysquare = Polygon([(-5, -5), (5, -5), (5, 5), (-5, 5)], close=True)
         self.big_u_shape = Polygon([(-100, -100), (-100, 100), (100, 100), (100, -100), (90, -100), (90, 90), (-90, 90), (-90, -100)],
                                    close=True)
@@ -14,8 +14,9 @@ class TestPolygon(object):
         assert self.square.touches(self.diamond)
 
     def test_closed_vs_open(self):
-        openpoly = Polygon([(0, 0), (10, 10), (0, 10)])
-        closedpoly = Polygon([(0, 0), (10, 10), (0, 10)], close=True)
+        coords = [(0, 0), (10, 10), (0, 10)]
+        openpoly = Polygon(coords)
+        closedpoly = Polygon(coords, close=True)
         assert len(openpoly.lines) == 2
         assert len(closedpoly.lines) == 3
 
@@ -24,6 +25,7 @@ class TestPolygon(object):
 
     def test_touching_shapes_does_not_enclose_each_other(self):
         assert not self.diamond.encloses(self.square)
+        assert not self.square.encloses(self.diamond)
 
     def test_bigclosedshape_encloses_openshape(self):
         assert self.bigdiamond.encloses(self.square)
