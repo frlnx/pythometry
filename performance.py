@@ -65,9 +65,21 @@ run_timer("Does two lines far away from each other touch? (no)", lines_far_away_
 
 diamond = Polygon([(-100, 0), (0, -100), (100, 0), (0, 100)])
 square = Polygon([(-75, -75), (75, -75), (75, 75), (-75, 75)])
-assert not line1.touches(line2)
 
-def nestled_polygons():
+def nestled_polygons_touch():
     diamond.touches(square)
 
-run_timer("Does two polygons nestled on each other touch? (yes)", nestled_polygons)
+run_timer("Does two polygons nestled on each other touch? (yes)", nestled_polygons_touch)
+
+def nestled_polygons_enclose():
+    diamond.encloses(square)
+
+run_timer("Does two polygons nestled on each other enclose? (no)", nestled_polygons_enclose)
+
+bigdiamond = Polygon([(-200, 0), (0, -200), (200, 0), (0, 200)], close=True)
+tinysquare = Polygon([(-5, -5), (5, -5), (5, 5), (-5, 5)], close=True)
+
+def bigdiamond_enclose_tinysquare():
+    bigdiamond.encloses(tinysquare)
+
+run_timer("Does a big polygon enclose a small one? (yes)", bigdiamond_enclose_tinysquare)

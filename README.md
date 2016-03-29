@@ -18,15 +18,17 @@ Only tested on:
 
 
 ## Current benchmarks:
-- Does two crossed lines touch? (yes) 	 10.25 usec/pass
-- Where does two crossed lines touch? 	 10.13 usec/pass
-- Does two parallel lines on top of each other touch? (yes) 	 6.47 usec/pass
-- Where does two parallel lines on top of each other touch? 	 6.26 usec/pass
-- Does two non overlapping parallel lines touch? (no, but close) 	 8.11 usec/pass
+- Does two crossed lines touch? (yes) 	 10.31 usec/pass
+- Where does two crossed lines touch? 	 10.17 usec/pass
+- Does two parallel lines on top of each other touch? (yes) 	 6.46 usec/pass
+- Where does two parallel lines on top of each other touch? 	 6.27 usec/pass
+- Does two non overlapping parallel lines touch? (no, but close) 	 8.13 usec/pass
 - Where does two non overlapping parallel lines touch? 	 7.95 usec/pass
-- Does two lines far away from each other touch? (no) 	 1.26 usec/pass
-- Does two lines far away from each other touch? (no) 	 1.11 usec/pass
-- Does two polygons nestled on each other touch? (yes) 	 18.42 usec/pass
+- Does two lines far away from each other touch? (no) 	 1.31 usec/pass
+- Does two lines far away from each other touch? (no) 	 1.17 usec/pass
+- Does two polygons nestled on each other touch? (yes) 	 18.44 usec/pass
+- Does two polygons nestled on each other enclose? (no) 	 19.33 usec/pass
+- Does a big polygon enclose a small one? (yes) 	 159.20 usec/pass
 
 ### Credit
 Used a public domain function by Darel Rex Finley (http://alienryderflex.com/intersect/) as a base for line intersection.
