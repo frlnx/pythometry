@@ -18,17 +18,20 @@ Only tested on:
 
 
 ## Current benchmarks:
-- Does two crossed lines touch? (yes) 	 10.31 usec/pass
-- Where does two crossed lines touch? 	 10.17 usec/pass
-- Does two parallel lines on top of each other touch? (yes) 	 6.46 usec/pass
-- Where does two parallel lines on top of each other touch? 	 6.27 usec/pass
-- Does two non overlapping parallel lines touch? (no, but close) 	 8.13 usec/pass
-- Where does two non overlapping parallel lines touch? 	 7.95 usec/pass
-- Does two lines far away from each other touch? (no) 	 1.31 usec/pass
-- Does two lines far away from each other touch? (no) 	 1.17 usec/pass
-- Does two polygons nestled on each other touch? (yes) 	 18.44 usec/pass
-- Does two polygons nestled on each other enclose? (no) 	 19.33 usec/pass
-- Does a big polygon enclose a small one? (yes) 	 159.20 usec/pass
+- Does two crossed lines touch? (yes) 	 11.2512 microseconds/pass
+- Where does two crossed lines touch? 	 10.4303 microseconds/pass
+- Does two parallel lines on top of each other touch? (yes) 	 6.7589 microseconds/pass
+- Where does two parallel lines on top of each other touch? 	 6.3586 microseconds/pass
+- Does two non overlapping parallel lines touch? (no, but close) 	 8.3299 microseconds/pass
+- Where does two non overlapping parallel lines touch? 	 8.1699 microseconds/pass
+- Does two lines far away from each other touch? (no) 	 1.3335 microseconds/pass
+- Does two lines far away from each other touch? (no) 	 1.1360 microseconds/pass
+- Does two polygons nestled on each other touch? (yes) 	 18.9363 microseconds/pass
+- Does two polygons nestled on each other enclose? (no) 	 19.8605 microseconds/pass
+- Does a big polygon enclose a small one? (yes) 	 163.2592 microseconds/pass
+- Does a big complex circle enclose a small complex circle? (yes) 	 1476.7210 microseconds/pass
+- Does a big simple diamond enclose a small complex circle? (yes) 	 773.1403 microseconds/pass
+- Does a big complex circle enclose a small simple square? (yes) 	 301.4145 microseconds/pass
 
 ### Credit
 Used a public domain function by Darel Rex Finley (http://alienryderflex.com/intersect/) as a base for line intersection.

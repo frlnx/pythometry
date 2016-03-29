@@ -6,8 +6,8 @@ import timeit
 def run_timer(text, function):
     t = timeit.Timer("{function}()".format(function=function.__name__),
                      "from __main__ import {function}".format(function=function.__name__))
-    tmpl = "%.2f usec/pass"
-    print("-", text, "\t", tmpl % (1000000 * t.timeit(number=100000)/100000))
+    tmpl = "%.4f microseconds/pass"
+    print("-", text, "\t", tmpl % (t.timeit(number=1000) * 1000))
 
 line1 = Line(0, 0, 100, 100)
 line2 = Line(100, 0, 0, 100)
@@ -83,3 +83,32 @@ def bigdiamond_enclose_tinysquare():
     bigdiamond.encloses(tinysquare)
 
 run_timer("Does a big polygon enclose a small one? (yes)", bigdiamond_enclose_tinysquare)
+
+import math
+bigcirclecoords = []
+smallcirclecoords = []
+for d in range(0, 360, 10):
+    coord = (math.cos(math.radians(d)) * 100, math.sin(math.radians(d)) * 100)
+    bigcirclecoords.append(coord)
+    coord = (math.cos(math.radians(d)) * 10, math.sin(math.radians(d)) * 10)
+    smallcirclecoords.append(coord)
+
+bigcomplexcircle = Polygon(bigcirclecoords, close=True)
+smallcomplexcircle = Polygon(smallcirclecoords, close=True)
+
+def complex_polygon_enclose_complex_polygon():
+    bigcomplexcircle.encloses(smallcomplexcircle)
+
+run_timer("Does a big complex circle enclose a small complex circle? (yes)", complex_polygon_enclose_complex_polygon)
+
+def simple_polygon_enclose_complex_polygon():
+    bigdiamond.encloses(smallcomplexcircle)
+
+run_timer("Does a big simple diamond enclose a small complex circle? (yes)", simple_polygon_enclose_complex_polygon)
+
+def complex_polygon_enclose_simple_polygon():
+    bigcomplexcircle.encloses(tinysquare)
+
+run_timer("Does a big complex circle enclose a small simple square? (yes)", complex_polygon_enclose_simple_polygon)
+
+
