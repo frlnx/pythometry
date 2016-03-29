@@ -139,15 +139,12 @@ class Line(object):
                (linebetween.endpoint_y < self.origo_y and otherradii > 0)
 
     def findtouchpoint(self, other):
-        #  Fail if either line segment is zero-length.
-        if (self.origo_x == self.endpoint_x and self.origo_y == self.endpoint_y) or \
-                (other.origo_x == other.endpoint_x and other.origo_y == other.endpoint_y):
+        if self.length == 0 or other.length == 0:
             return None
 
         if not self._boundingbox_intersects(other):
             return None
 
-        #  Fail if the segments share an end-point.
         point = self._shares_points(other)
         if point is not None:
             return point
@@ -170,12 +167,12 @@ class Line(object):
         thecos = self_endpoint_x / float(self.length)
         thesin = self_endpoint_y / float(self.length)
 
-        newX = other_origo_x * thecos + other_origo_y * thesin
+        tempx = other_origo_x * thecos + other_origo_y * thesin
         other_origo_y = other_origo_y * thecos - other_origo_x * thesin
-        other_origo_x = newX
-        newX = other_endpoint_x * thecos + other_endpoint_y * thesin
+        other_origo_x = tempx
+        tempx = other_endpoint_x * thecos + other_endpoint_y * thesin
         other_endpoint_y = other_endpoint_y * thecos - other_endpoint_x * thesin
-        other_endpoint_x = newX
+        other_endpoint_x = tempx
 
         if (other_origo_y < 0.) == (other_endpoint_y < 0.):
             return None
