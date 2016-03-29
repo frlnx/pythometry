@@ -47,6 +47,8 @@ class Polygon(object):
         return False
 
     def encloses(self, other):
+        if not self._boundingbox_intersects(other):
+            return False
         if self.touches(other):
             return False
         lines = self.lines
