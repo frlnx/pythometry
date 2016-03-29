@@ -59,8 +59,9 @@ class Polygon(object):
         anypoint_x, anypoint_y = other.lines[0].points[0]
         outsidepoint_x, outsidepoint_y = [coord - 1 for coord in self.boundingbox[0]]
         breakoutline = Line(anypoint_x, anypoint_y, outsidepoint_x, outsidepoint_y)
-        touches = 0
+        touchpoints = []
         for line in self.lines:
-            if line.touches(breakoutline):
-                touches += 1
-        return touches % 2 == 1
+            touchpoint = line.findtouchpoint(breakoutline)
+            if touchpoint is not None:
+                touchpoints.append(touchpoint)
+        return len(set(touchpoints)) % 2 == 1
