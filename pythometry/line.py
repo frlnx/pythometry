@@ -167,32 +167,27 @@ class Line(object):
         other_endpoint_x = other.endpoint_x - self.origo_x
         other_endpoint_y = other.endpoint_y - self.origo_y
 
-        #  (2) Rotate the system so that point B is on the positive X self.origo_xis.
-        theCos = self_endpoint_x / float(self.length)
-        theSin = self_endpoint_y / float(self.length)
+        thecos = self_endpoint_x / float(self.length)
+        thesin = self_endpoint_y / float(self.length)
 
-        newX = other_origo_x * theCos + other_origo_y * theSin
-        other_origo_y = other_origo_y * theCos - other_origo_x * theSin
+        newX = other_origo_x * thecos + other_origo_y * thesin
+        other_origo_y = other_origo_y * thecos - other_origo_x * thesin
         other_origo_x = newX
-        newX = other_endpoint_x * theCos + other_endpoint_y * theSin
-        other_endpoint_y = other_endpoint_y * theCos - other_endpoint_x * theSin
+        newX = other_endpoint_x * thecos + other_endpoint_y * thesin
+        other_endpoint_y = other_endpoint_y * thecos - other_endpoint_x * thesin
         other_endpoint_x = newX
 
-        #  Fail if segment C-D doesn't cross line A-B.
-        if (other_origo_y < 0. and other_endpoint_y < 0.) or (other_origo_y >= 0. and other_endpoint_y >= 0.):
+        if (other_origo_y < 0.) == (other_endpoint_y < 0.):
             return None
         
-        #  (3) Discover the position of the intersection point along line A-B.
         distance_to_intersection_along_own_axis = other_endpoint_x + (other_origo_x - other_endpoint_x) * \
                                                   other_endpoint_y / (other_endpoint_y - other_origo_y)
         
-        #  Fail if segment C-D crosses line A-B outside of segment A-B.
-        if 0 > distance_to_intersection_along_own_axis or distance_to_intersection_along_own_axis > self.length:
+        if not 0 <= distance_to_intersection_along_own_axis <= self.length:
             return None
         
-        #  (4) Apply the discovered position to line A-B in the original coordinate system.
-        x = self.origo_x + distance_to_intersection_along_own_axis * theCos
-        y = self.origo_y + distance_to_intersection_along_own_axis * theSin
+        x = self.origo_x + distance_to_intersection_along_own_axis * thecos
+        y = self.origo_y + distance_to_intersection_along_own_axis * thesin
         x = round(x, self.DECIMALPOINTSACCURACY)
         y = round(y, self.DECIMALPOINTSACCURACY)
         return (x, y)
