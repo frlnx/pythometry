@@ -18,20 +18,20 @@ Only tested on:
 
 
 ## Current benchmarks:
-- Does two crossed lines touch? (yes) 	 11.2512 microseconds/pass
-- Where does two crossed lines touch? 	 10.4303 microseconds/pass
-- Does two parallel lines on top of each other touch? (yes) 	 6.7589 microseconds/pass
-- Where does two parallel lines on top of each other touch? 	 6.3586 microseconds/pass
-- Does two non overlapping parallel lines touch? (no, but close) 	 8.3299 microseconds/pass
-- Where does two non overlapping parallel lines touch? 	 8.1699 microseconds/pass
-- Does two lines far away from each other touch? (no) 	 1.3335 microseconds/pass
-- Does two lines far away from each other touch? (no) 	 1.1360 microseconds/pass
-- Does two polygons nestled on each other touch? (yes) 	 18.9363 microseconds/pass
-- Does two polygons nestled on each other enclose? (no) 	 19.8605 microseconds/pass
-- Does a big polygon enclose a small one? (yes) 	 163.2592 microseconds/pass
-- Does a big complex circle enclose a small complex circle? (yes) 	 1476.7210 microseconds/pass
-- Does a big simple diamond enclose a small complex circle? (yes) 	 773.1403 microseconds/pass
-- Does a big complex circle enclose a small simple square? (yes) 	 301.4145 microseconds/pass
+- Does two crossed lines touch? (yes) 	 10.4826 microseconds/pass
+- Where does two crossed lines touch? 	 10.3653 microseconds/pass
+- Does two parallel lines on top of each other touch? (yes) 	 6.5225 microseconds/pass
+- Where does two parallel lines on top of each other touch? 	 6.3153 microseconds/pass
+- Does two non overlapping parallel lines touch? (no, but close) 	 8.2568 microseconds/pass
+- Where does two non overlapping parallel lines touch? 	 8.1087 microseconds/pass
+- Does two lines far away from each other touch? (no) 	 1.2200 microseconds/pass
+- Does two lines far away from each other touch? (no) 	 1.0632 microseconds/pass
+- Does two polygons nestled on each other touch? (yes) 	 19.7406 microseconds/pass
+- Does two polygons nestled on each other enclose? (no) 	 19.9524 microseconds/pass
+- Does a big polygon enclose a small one? (yes) 	 164.8557 microseconds/pass
+- Does a big complex circle enclose a small complex circle? (yes) 	 131.8628 microseconds/pass
+- Does a big simple diamond enclose a small complex circle? (yes) 	 782.9450 microseconds/pass
+- Does a big complex circle enclose a small simple square? (yes) 	 140.6211 microseconds/pass
 
 ### Credit
 Used a public domain function by Darel Rex Finley (http://alienryderflex.com/intersect/) as a base for line intersection.
