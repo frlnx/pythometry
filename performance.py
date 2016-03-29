@@ -86,14 +86,18 @@ run_timer("Does a big polygon enclose a small one? (yes)", bigdiamond_enclose_ti
 
 import math
 bigcirclecoords = []
+mediumcirclecoords = []
 smallcirclecoords = []
 for d in range(0, 360, 10):
     coord = (math.cos(math.radians(d)) * 100, math.sin(math.radians(d)) * 100)
     bigcirclecoords.append(coord)
+    coord = (math.cos(math.radians(d)) * 70, math.sin(math.radians(d)) * 70)
+    mediumcirclecoords.append(coord)
     coord = (math.cos(math.radians(d)) * 10, math.sin(math.radians(d)) * 10)
     smallcirclecoords.append(coord)
 
 bigcomplexcircle = Polygon(bigcirclecoords, close=True)
+mediumcomplexcircle = Polygon(mediumcirclecoords, close=True)
 smallcomplexcircle = Polygon(smallcirclecoords, close=True)
 
 def complex_polygon_enclose_complex_polygon():
@@ -111,4 +115,8 @@ def complex_polygon_enclose_simple_polygon():
 
 run_timer("Does a big complex circle enclose a small simple square? (yes)", complex_polygon_enclose_simple_polygon)
 
+def complex_close_circles_encloses():
+    bigcomplexcircle.encloses(mediumcomplexcircle)
+
+run_timer("Does a big complex circle enclose a complex circle of almost equal size? (yes)", complex_close_circles_encloses)
 

@@ -38,6 +38,8 @@ class Polygon(object):
             self_maxpoint[0] >= other_minpoint[0] and self_maxpoint[1] >= other_minpoint[1]
 
     def touches(self, other):
+        if len(self.lines) < len(other.lines):
+            return other.touches(self)
         if not self._boundingbox_intersects(other):
             return False
         for line in self.lines:
