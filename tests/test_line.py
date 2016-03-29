@@ -28,6 +28,11 @@ class TestLine(object):
         self.right_shifted_diagonal_two = Line(10, 70, 90, 30)
         self.line1 = Line(0, 0, 100, 100)
         self.line2 = Line(100, 0, 0, 100)
+        self.bigdiamondpart = Line(-200, 0, 0, -200)
+        self.squarepart = Line(-75, -75, 75, -75)
+
+    def test_bigdiamond_and_square_parts(self):
+        assert not self.bigdiamondpart.findtouchpoint(self.squarepart)
 
     def test_overlapping_on_same_plane(self):
         assert self.overlapping_left.touches(self.overlapping_right)

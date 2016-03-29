@@ -3,7 +3,7 @@ import math
 
 class Line(object):
 
-    REPRTEMPLATE = "pythometry.Line ({} {}) - ({} {}) r:{} l:{}"
+    REPRTEMPLATE = "pythometry.Line ({} {}) - ({} {}) d:{} l:{}"
     DECIMALPOINTSACCURACY = 8
 
     def __init__(self, origo_x, origo_y, endpoint_x=None, endpoint_y=None, radii=None, length=None):
@@ -71,7 +71,7 @@ class Line(object):
     def __repr__(self):
         return self.REPRTEMPLATE.format(self.origo_x, self.origo_y,
                                         self.endpoint_x, self.endpoint_y,
-                                        self.radii, self.length)
+                                        math.degrees(self.radii), self.length)
 
     @staticmethod
     def fit_radii(radii_to_fit, radii_for_reference=0):
@@ -119,10 +119,12 @@ class Line(object):
         if not self.boundingbox[0][0] < px < self.boundingbox[1][0] and \
            not self.boundingbox[0][1] < py < self.boundingbox[1][1]:
             return False
-        px -= self.boundingbox[0][0]
-        py -= self.boundingbox[0][1]
-        k = float(self.deltay) / float(self.deltax)
-        return k == float(py) / float(px)
+        px -= self.origo_x
+        py -= self.origo_y
+        if self.deltax == 0:
+            return px in self.points
+        k = round(float(self.deltay) / float(self.deltax), self.DECIMALPOINTSACCURACY)
+        return k == round(float(py) / float(px), self.DECIMALPOINTSACCURACY)
 
     def touches(self, other):
         if not self._boundingbox_intersects(other):
@@ -136,10 +138,22 @@ class Line(object):
         if point is not None:
             return True
 
+        if not self.converges_on(other):
+            return None
+
         owndistance, otherdistance = self._finddistancetocollision(other)
         if owndistance is None or owndistance > self.length or otherdistance > other.length:
             return False
         return True
+
+    def converges_on(self, other):
+        otherradii = other.radii
+        linebetween = Line(self.origo_x, self.origo_y, other.origo_x, other.origo_y)
+        otherradii -= self.radii
+        otherradii = self.fit_radii(otherradii)
+        linebetween.updatevector(linebetween.radii - self.radii)
+        return (linebetween.endpoint_y > self.origo_y and otherradii < 0) or \
+               (linebetween.endpoint_y < self.origo_y and otherradii > 0)
 
     def findtouchpoint(self, other):
         if not self._boundingbox_intersects(other):
@@ -153,9 +167,10 @@ class Line(object):
         if point is not None:
             return point
 
+        if not self.converges_on(other):
+            return None
+
         owndistance, otherdistance = self._finddistancetocollision(other)
-        print(self, other)
-        print(owndistance, otherdistance)
         if owndistance is None or owndistance > self.length or otherdistance > other.length:
             return None
 
@@ -175,8 +190,8 @@ class Line(object):
         gamma = math.pi - alpha - beta
         try:
             gamma_fraction = math.sin(gamma) / gamma_line.length
-            alpha_length = math.fabs(math.sin(alpha) / gamma_fraction)
-            beta_length = math.fabs(math.sin(beta) / gamma_fraction)
+            alpha_length = (math.sin(alpha) / gamma_fraction)
+            beta_length = (math.sin(beta) / gamma_fraction)
         except ZeroDivisionError:
             return None
         return beta_length, alpha_length
