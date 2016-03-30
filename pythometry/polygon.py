@@ -1,28 +1,32 @@
 from pythometry.line import Line
 
 
-class Polygon(object):
+class LineCollection(object):
 
-    def __init__(self, points, close=False):
-        self.points = points
-        if close:
-            self.points.append(self.points[0])
-        self.closed = self.points[0] == self.points[-1]
-        self.lines = []
-        self._generatelines()
+    def __init__(self, lines):
+        self.lines = list(lines)
+        self.points = [line.points[0] for line in self.lines]
+        self.points += [line.points[1] for line in self.lines]
         self.boundingbox = ((None, None), (None, None))
         self._updateboundingbox()
 
-    def _generatelines(self):
-        lastpoint = self.points[0]
-        self.lines = []
-        for point in self.points[1:]:
-            x, y = lastpoint
-            x2, y2 = point
-            self.lines.append(Line(x, y, x2, y2))
-            lastpoint = point
+    def append(self, line):
+        self.lines.append(line)
+        self.points += line.points
+        self._updateboundingbox()
+
+    def __iadd__(self, other):
+        self.lines += other
+        self.points += [line.points[0] for line in other.lines]
+        self.points += [line.points[1] for line in other.lines]
+        self._updateboundingbox()
+
+    def __iter__(self):
+        return self.lines.__iter__()
 
     def _updateboundingbox(self):
+        if self.points == []:
+            return
         xcoords = [point[0] for point in self.points]
         ycoords = [point[1] for point in self.points]
         minx = min(xcoords)
@@ -49,6 +53,27 @@ class Polygon(object):
                 if line.touches(line2):
                     return True
         return False
+
+class Polygon(LineCollection):
+
+    def __init__(self, points, close=False):
+        self.points = points
+        if close:
+            self.points.append(self.points[0])
+        self.closed = self.points[0] == self.points[-1]
+        self.lines = []
+        self._generatelines()
+        self.boundingbox = ((None, None), (None, None))
+        self._updateboundingbox()
+
+    def _generatelines(self):
+        lastpoint = self.points[0]
+        self.lines = []
+        for point in self.points[1:]:
+            x, y = lastpoint
+            x2, y2 = point
+            self.lines.append(Line(x, y, x2, y2))
+            lastpoint = point
 
     def encloses(self, other):
         if self.touches(other):
