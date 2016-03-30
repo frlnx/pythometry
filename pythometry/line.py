@@ -157,6 +157,24 @@ class Line(object):
             return None
         
         #  (1) Translate the system so that point A is on the origin.
+
+        distance_to_intersection_along_own_axis = self.distance_to_collision_with(other)
+        if distance_to_intersection_along_own_axis is None:
+            return None
+
+        if not 0 <= distance_to_intersection_along_own_axis <= self.length:
+            return None
+
+        thecos = (self.endpoint_x - self.origo_x) / float(self.length)
+        thesin = (self.endpoint_y - self.origo_y) / float(self.length)
+
+        x = self.origo_x + distance_to_intersection_along_own_axis * thecos
+        y = self.origo_y + distance_to_intersection_along_own_axis * thesin
+        x = round(x, self.DECIMALPOINTSACCURACY)
+        y = round(y, self.DECIMALPOINTSACCURACY)
+        return (x, y)
+
+    def distance_to_collision_with(self, other):
         self_endpoint_x = self.endpoint_x - self.origo_x
         self_endpoint_y = self.endpoint_y - self.origo_y
         other_origo_x = other.origo_x - self.origo_x
@@ -176,18 +194,9 @@ class Line(object):
 
         if (other_origo_y < 0.) == (other_endpoint_y < 0.):
             return None
-        
-        distance_to_intersection_along_own_axis = other_endpoint_x + (other_origo_x - other_endpoint_x) * \
-                                                  other_endpoint_y / (other_endpoint_y - other_origo_y)
-        
-        if not 0 <= distance_to_intersection_along_own_axis <= self.length:
-            return None
-        
-        x = self.origo_x + distance_to_intersection_along_own_axis * thecos
-        y = self.origo_y + distance_to_intersection_along_own_axis * thesin
-        x = round(x, self.DECIMALPOINTSACCURACY)
-        y = round(y, self.DECIMALPOINTSACCURACY)
-        return (x, y)
+
+        return other_endpoint_x + (other_origo_x - other_endpoint_x) * \
+               other_endpoint_y / (other_endpoint_y - other_origo_y)
 
     def parallel_to(self, other):
         return self.radii % (math.pi * 2) == other.radii % (math.pi * 2) or \
